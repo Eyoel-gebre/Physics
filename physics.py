@@ -14,7 +14,7 @@ font_small = pygame.font.Font('freesansbold.ttf', 13)
 #reference: all units are in meters, 1 meter = 1 pixel * pixel to meter ratio
 pixel_to_meter_ratio = 40
 bodies = []
-Gravity = 9.8#m/s^2
+gravity = 9.8#m/s^2
 fps = 60
 aiming = False
 arrowStart = [0,0]
@@ -28,6 +28,7 @@ zoom_txt = font_small.render('Zoom: ' + str(int(round(pixel_to_meter_ratio/40,2)
 radius_txt = font_small.render('Radius: ' + str(radius) + 'M', True, (255,255,255))
 elasticity_txt = font_small.render('Elasticity: ' + str(elasticity), True, (255,255,255))
 fps_txt = font_small.render('RefreshRate: ' + str(fps) + '/s', True, (255,255,255))
+gravity_txt = font_small.render('Gravity: ' + str(gravity) + 'm/s^2', True, (255,255,255))
 
 class body():
     def __init__(self, x, y, v_x, v_y):
@@ -73,7 +74,7 @@ def motion():
     out_of_range = None
     for i in range(len(bodies)):
         body = bodies[i]
-        body.v_y += Gravity/fps  # Gravity
+        body.v_y += gravity/fps  # gravity
         body.x += (body.v_x/fps) * pixel_to_meter_ratio  # velocity in x direction
         body.y += (body.v_y/fps) * pixel_to_meter_ratio  # velocity in y direction
         pygame.draw.circle(window, (240,240,240),(body.x, body.y), radius*pixel_to_meter_ratio)
@@ -117,9 +118,12 @@ def drawUI():
     radius_dec.draw()
     fps_up.draw()
     fps_down.draw()
+    gravity_up.draw()
+    gravity_down.draw()
     window.blit(zoom_txt, (window_d - 165, 16))
     window.blit(radius_txt, (window_d - 165, 51))
     window.blit(fps_txt, (window_d - 380, 16))
+    window.blit(gravity_txt, (window_d - 383, 51))
 
 #checks whether a button has been pressed
 def buttonPress():
@@ -132,6 +136,8 @@ def buttonPress():
     global fps_txt
     global elasticity
     global elasticity_txt
+    global gravity
+    global gravity_txt
     x = pygame.mouse.get_pos()[0]
     y = pygame.mouse.get_pos()[1]
     btnPress = False
@@ -155,12 +161,21 @@ def buttonPress():
         if fps != 10:
             fps -= 10
         btnPress = True
-    
+    if x > gravity_up.x and x < gravity_up.x + 25 and y > gravity_up.y and y < gravity_up.y + 25:
+        gravity += .7
+        gravity = round(gravity,2)
+        btnPress = True
+    if x > gravity_down.x and x < gravity_down.x + 25 and y > gravity_down.y and y < gravity_down.y + 25:
+        gravity -= .7
+        gravity = round(gravity,2)
+        btnPress = True
+
     if btnPress: 
         zoom_txt = font_small.render('Zoom: ' + str(int(round(pixel_to_meter_ratio/40,2)*100)) +'%', True, (255,255,255))
         radius_txt = font_small.render('Radius: ' + str(radius) + 'M', True, (255,255,255))
         key = font.render(str(round(200/pixel_to_meter_ratio,3)) + ' Meters', True, (255,255,255))
         fps_txt = font_small.render('RefreshRate: ' + str(fps) + '/s', True, (255,255,255))
+        gravity_txt = font_small.render('Gravity: ' + str(gravity) + 'm/s^2', True, (255,255,255))
         return True
     else:
         return False
@@ -172,6 +187,8 @@ radius_inc = button(window_d - 60, 45, True)
 radius_dec = button(window_d - 220, 45, False)
 fps_up = button(window_d - 260, 10, True)
 fps_down = button(window_d - 420, 10, False)
+gravity_up = button(window_d - 260, 45, True)
+gravity_down = button(window_d - 420, 45, False)
 
 #main loop
 while True:
