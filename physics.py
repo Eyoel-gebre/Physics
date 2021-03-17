@@ -7,7 +7,7 @@ pygame.display.set_caption('Physics')
 Icon = pygame.image.load('images/icon.png')
 pygame.display.set_icon(Icon)
 
-#font init
+#initializing text font
 font = pygame.font.Font('freesansbold.ttf', 20)
 font_small = pygame.font.Font('freesansbold.ttf', 13)
 
@@ -68,6 +68,7 @@ def createBody():
                 clearArea = False
                 break
     body(arrowStart[0], arrowStart[1], v_x, v_y)
+    print(len(bodies))
 
 #simulates motion of all bodies
 def motion():
