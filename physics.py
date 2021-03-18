@@ -68,7 +68,6 @@ def createBody():
                 clearArea = False
                 break
     body(arrowStart[0], arrowStart[1], v_x, v_y)
-    print(len(bodies))
 
 #simulates motion of all bodies
 def motion():
