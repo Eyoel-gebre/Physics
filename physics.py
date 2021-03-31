@@ -15,7 +15,7 @@ font_small = pygame.font.Font('freesansbold.ttf', 13)
 pixel_to_meter_ratio = 40
 bodies = []
 gravity = 9.8#m/s^2
-fps = 60
+fps = 80
 aiming = False
 arrowStart = [0,0]
 arrowEnd = [0,0]
@@ -34,8 +34,9 @@ class body():
     def __init__(self, x, y, v_x, v_y):
         self.x = x
         self.y = y
-        self.v_x = v_x 
-        self.v_y = v_y * 2
+        self.v_x = v_x * 2
+        self.v_y = v_y * 2 
+        self.color = (0,255,0)
         bodies.append(self)
 
 class button():
@@ -77,11 +78,11 @@ def motion():
         body.v_y += gravity/fps  # gravity
         body.x += (body.v_x/fps) * pixel_to_meter_ratio  # velocity in x direction
         body.y += (body.v_y/fps) * pixel_to_meter_ratio  # velocity in y direction
-        pygame.draw.circle(window, (240,240,240),(body.x, body.y), radius*pixel_to_meter_ratio)
-        if body.y > window_d:
+        pygame.draw.circle(window, body.color,(body.x, body.y), radius*pixel_to_meter_ratio)
+        if body.y > window_d+100:
             out_of_range = i    #bodies that are to far and need to be deleted
     if out_of_range or out_of_range == 0:
-        del bodies[out_of_range]   
+        del bodies[out_of_range] 
 
 #detects intersecting objects and simulates collisions
 def collisions():
@@ -90,14 +91,16 @@ def collisions():
             body1 = bodies[i]
             body2 = bodies[j]
             distance = math.sqrt((body1.x-body2.x)**2+(body1.y - body2.y)**2) #calculates distance between objects
-            if distance < 2*radius*pixel_to_meter_ratio:
-                b1x = body1.v_x  #data holders
+            if distance < 2*radius*pixel_to_meter_ratio:  #there is a collision
+                b1x = body1.v_x  
                 b1y = body1.v_y 
                 #objects switch velocities because of equal mass
                 body1.v_x = body2.v_x * elasticity
                 body1.v_y = body2.v_y * elasticity
                 body2.v_x = b1x * elasticity
                 body2.v_y = b1y * elasticity
+                body1.color = (255,0,0)
+                body2.color = (255,0,0)
 
 #--------------------UI/buttons--------------------
 
